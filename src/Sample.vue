@@ -8,6 +8,18 @@
                     </div>
                 </template>
             </draggable>
+            <!-- 希望能夠變成：
+            <draggable
+                v-model="myArray"
+                group="people"
+                @start="drag = true"
+                @end="drag = false"
+                item-key="id"
+            >
+                <template #item="{element}">
+                    <div>{{ element.name }}</div>
+                </template>
+            </draggable> -->
 
             <pre>{{ JSON.stringify(items1, undefined, 4) }}</pre>
         </div>
@@ -26,9 +38,9 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
-import Draggable from './components/DraggableContainer'
+import Draggable from './components/DraggableContainer.vue'
 export default defineComponent({
     name: 'Sample',
     components: {

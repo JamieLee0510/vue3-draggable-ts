@@ -1,11 +1,13 @@
-import { DraggableItem } from "../types/draggable-item.interface";
+import { DraggableItem } from '../types/draggable-item.interface'
 
 export const changeArrayOrder = (
-  arr: Array<DraggableItem>,
-  target: DraggableItem,
-  newIndexOfTarget: number
+    arr: Array<DraggableItem>,
+    target: DraggableItem,
+    newIndexOfTarget: number,
 ): Array<DraggableItem> => {
-  let newArr = arr.filter((e) => e.id !== target.id);
-  newArr.splice(newIndexOfTarget, 0, { ...target });
-  return newArr;
-};
+    let newArr = arr.filter(e => e.id !== target.id)
+    console.log('newArr:', newArr)
+    newArr.splice(newIndexOfTarget, 0, { ...target })
+    console.log('newArr:', newArr)
+    return newArr
+}
