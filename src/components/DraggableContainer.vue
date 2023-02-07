@@ -39,36 +39,6 @@ export default defineComponent({
     setup(props, context) {
         const { modelValue } = toRefs(props)
         const { id, items, onDragOver, onItemDragOver } = useDraggableContainer(modelValue, context)
-        const containerIdGenerator = getIdGenerator()
-
-        // // dissturcture  useDraggableContainer(modelValue, context)
-        // const id = containerIdGenerator()
-        // const items = ref<Array<DraggableItem>>(toDraggableItems(modelValue.value))
-        // const transitioning = ref(false)
-        // const itemCurrentlyDragging = ref<DraggableItem | null>(null)
-        // const containerIdCurrentlyDraggedOver = ref<number>(null)
-        // const onDragOver = () => {
-        //     if (
-        //         transitioning.value ||
-        //         !itemCurrentlyDragging.value ||
-        //         containerIdCurrentlyDraggedOver.value === id
-        //     ) {
-        //         return
-        //     }
-
-        //     if (items.value.length > 0) {
-        //         return
-        //     }
-
-        //     containerIdCurrentlyDraggedOver.value = id
-        //     items.value = [itemCurrentlyDragging.value]
-        // }
-        // const onItemDragOver = ({ position }: { position: number }) => {
-        //     if (transitioning || !itemCurrentlyDragging.value) {
-        //         return
-        //     }
-        //     items.value = changeArrayOrder(items.value, itemCurrentlyDragging.value, position)
-        // }
 
         return { id, items, onDragOver, onItemDragOver }
     },
