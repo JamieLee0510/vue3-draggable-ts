@@ -1,50 +1,35 @@
 <template>
     <div class="container">
         <div class="left">
-            <draggable v-model="items1" transition="100" class="drop-zone">
+            <DraggableItemContainer v-model="items1" keyName="title" class="drop-zone">
                 <template v-slot:item="{ item }">
-                    <div class="draggable-item">
-                        {{ item.title }}
-                    </div>
+                    <div class="draggable-item">{{ item.title }}</div>
                 </template>
-            </draggable>
-            <!-- 希望能夠變成：
-            <draggable
-                v-model="myArray"
-                group="people"
-                @start="drag = true"
-                @end="drag = false"
-                item-key="id"
-            >
-                <template #item="{element}">
-                    <div>{{ element.name }}</div>
-                </template>
-            </draggable> -->
+            </DraggableItemContainer>
+            <!-- Draggable container -->
 
             <pre>{{ JSON.stringify(items1, undefined, 4) }}</pre>
         </div>
-
         <div class="right">
-            <draggable v-model="items2" transition="100" class="drop-zone">
+            <DraggableItemContainer v-model="items2" keyName="title" class="drop-zone">
                 <template v-slot:item="{ item }">
-                    <div class="draggable-item">
-                        {{ item.title }}
-                    </div>
+                    <div class="draggable-item">{{ item.title }}</div>
                 </template>
-            </draggable>
-
+            </DraggableItemContainer>
             <pre>{{ JSON.stringify(items2, undefined, 4) }}</pre>
+            <button @click="add">add</button>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import Draggable from './components/DraggableContainer.vue'
+import { defineComponent, ref, onUpdated, watch, reactive } from 'vue'
+import DraggableItemContainer from './components/DraggableContainer.vue'
 export default defineComponent({
     name: 'Sample',
     components: {
-        Draggable,
+        // DraggableItemComponent,
+        DraggableItemContainer,
     },
     setup() {
         const items1 = ref(
@@ -52,14 +37,34 @@ export default defineComponent({
                 .fill({})
                 .map((_, index) => ({ title: `Item ${index + 1}` })),
         )
-
         const items2 = ref([])
-        return { items1, items2 }
+        // id:for draggabe container id
+
+        // const { id, items: demoItems, onDragOver, onItemDragOver } = useDraggableContainer(
+        //     items1,
+        //     'title',
+        //     context,
+        //     updateData,
+        // )
+
+        const add = () => {
+            const current = items1.value.length + 1
+            items1.value.push({ title: `Item ${current}` })
+        }
+
+        return {
+            items1,
+            items2,
+            add,
+        }
     },
 })
 </script>
 
 <style>
+.draggable-item-list-move {
+    transition: 300ms;
+}
 .container {
     width: 800px;
     display: flex;

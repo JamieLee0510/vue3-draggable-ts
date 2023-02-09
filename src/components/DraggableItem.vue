@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { toRefs, defineComponent } from 'vue'
+import { toRefs, defineComponent, ref } from 'vue'
 import { useDraggableItem } from '../composables/draggable'
 
 export default defineComponent({
@@ -23,11 +23,12 @@ export default defineComponent({
     props: {
         item: Object,
         position: Number,
+        keyName: String,
         containerId: Number,
     },
     setup(props, context) {
-        console.log('item:', props.item)
         const { item, position, containerId } = toRefs(props)
+
         const {
             draggableItemEl,
             isDragging,
@@ -36,7 +37,7 @@ export default defineComponent({
             onDragEnd,
             transitionStart,
             transitionEnd,
-        } = useDraggableItem(item, position, containerId, context)
+        } = useDraggableItem(item, props.keyName, position, containerId, context)
 
         return {
             draggableItemEl,
