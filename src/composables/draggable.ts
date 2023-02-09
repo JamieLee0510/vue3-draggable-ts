@@ -2,24 +2,22 @@ import { ref, onMounted, onUpdated, watch, SetupContext, Ref, nextTick } from 'v
 import { changeArrayOrder } from '../utils/change-order_demo'
 import { getIdGenerator } from '../utils/id-generator'
 import { throttle } from '../utils/throttle'
-import { toOriginalArray, toDraggableItems } from '../utils/to-draggable-items'
 
 let itemCurrentlyDragging = ref<any>(null)
 let containerIdCurrentlyDraggedOver = ref<number | null>(null)
 let transitioning = false
 const containerIdGenerator = getIdGenerator()
 
-const useDraggableContainer = (
-    originalItems: Ref<Array<any>>,
+const useDraggableContainer = <T>(
+    originalItems: Ref<Array<T>>,
     keyName: string,
     context: SetupContext,
-    updateFunc?: Function,
 ) => {
     const id = containerIdGenerator()
 
     //const items = ref<Array<DraggableItem>>(toDraggableItems(originalItems.value))
 
-    const items = ref<Array<any>>(JSON.parse(JSON.stringify(originalItems.value)))
+    const items = ref<Array<T>>(JSON.parse(JSON.stringify(originalItems.value)))
 
     // update items while props.list changed
     watch(
@@ -36,13 +34,7 @@ const useDraggableContainer = (
         if (itemCurrentlyDragging.value) {
             return
         }
-
-        if (updateFunc) {
-            updateFunc([...items.value])
-        } else {
-            console.log('update:modelValue,:', JSON.parse(JSON.stringify(items.value)))
-            context.emit('update:modelValue', JSON.parse(JSON.stringify(items.value)))
-        }
+        context.emit('update:modelValue', JSON.parse(JSON.stringify(items.value)))
     })
     // case when an item is being dragged to another container
     watch(containerIdCurrentlyDraggedOver, () => {
@@ -88,14 +80,14 @@ const useDraggableContainer = (
     }
 }
 
-const useDraggableItem = (
-    item: Ref<any>,
+const useDraggableItem = <T>(
+    item: Ref<T>,
     keyName: string,
     position: Ref<number>,
     containerId: Ref<number>,
     context: SetupContext,
 ) => {
-    const draggableItemEl = ref<any | null>(null)
+    const draggableItemEl = ref<Element | null>(null)
     const isDragging = ref(false)
 
     if (
@@ -110,13 +102,17 @@ const useDraggableItem = (
     const middleY = ref<number | null>(null)
 
     onMounted(async () => {
-        const box = draggableItemEl.value.getBoundingClientRect()
-        middleY.value = box.top + box.height / 2
+        if (draggableItemEl.value) {
+            const box = draggableItemEl.value.getBoundingClientRect()
+            middleY.value = box.top + box.height / 2
+        }
     })
 
     onUpdated(() => {
-        const box = draggableItemEl.value.getBoundingClientRect()
-        middleY.value = box.top + box.height / 2
+        if (draggableItemEl.value) {
+            const box = draggableItemEl.value!.getBoundingClientRect()
+            middleY.value = box.top + box.height / 2
+        }
     })
 
     const onDragStart = () => {
