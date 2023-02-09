@@ -11,7 +11,6 @@
       "outDir": "./types",
       "declaration": true
   },
-  "files": [
-      "./src/vuedraggable.js"
-  ]
+  "include": ["src","examples"],
+  "exclude": ["test"]
 }

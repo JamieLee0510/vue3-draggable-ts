@@ -1,21 +1,19 @@
 <template>
     <div class="container">
         <div class="left">
-            <DraggableItemContainer v-model="items1" keyName="title" class="drop-zone">
+            <Draggable v-model="items1" keyName="title" class="drop-zone">
                 <template v-slot:item="{ item }">
                     <div class="draggable-item">{{ item.title }}</div>
                 </template>
-            </DraggableItemContainer>
-            <!-- Draggable container -->
-
+            </Draggable>
             <pre>{{ JSON.stringify(items1, undefined, 4) }}</pre>
         </div>
         <div class="right">
-            <DraggableItemContainer v-model="items2" keyName="title" class="drop-zone">
+            <Draggable v-model="items2" keyName="title" class="drop-zone">
                 <template v-slot:item="{ item }">
                     <div class="draggable-item">{{ item.title }}</div>
                 </template>
-            </DraggableItemContainer>
+            </Draggable>
             <pre>{{ JSON.stringify(items2, undefined, 4) }}</pre>
             <button @click="add">add</button>
         </div>
@@ -24,13 +22,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, onUpdated, watch, reactive } from 'vue'
-import DraggableItemContainer from './components/DraggableContainer.vue'
+import Draggable from '../src/index'
 export default defineComponent({
     name: 'Sample',
-    components: {
-        // DraggableItemComponent,
-        DraggableItemContainer,
-    },
+    components: { Draggable },
     setup() {
         const items1 = ref(
             Array(5)
