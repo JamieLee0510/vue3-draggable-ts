@@ -19,17 +19,24 @@
 </template>
 
 <script lang="ts">
-import { toRefs, toRef, defineComponent, ref, watch } from 'vue'
+import { toRefs, defineComponent, ref, watch } from 'vue'
 import DraggableItemComponent from './DraggableItem.vue'
-import { useDraggableContainer } from '../composables/draggable'
+import { useDraggableContainer } from '../hook/draggable'
+
 export default defineComponent({
     name: 'Draggable',
     components: {
         DraggableItemComponent,
     },
     props: {
-        modelValue: Array,
-        keyName: String,
+        modelValue: {
+            type: Array,
+            require: true,
+        },
+        keyName: {
+            type: String,
+            require: true,
+        },
     },
     setup(props, context) {
         const { modelValue } = toRefs(props)

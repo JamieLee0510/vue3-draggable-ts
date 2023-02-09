@@ -14,9 +14,9 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { toRefs, defineComponent, ref } from 'vue'
-import { useDraggableItem } from '../composables/draggable'
+import { useDraggableItem } from '../hook/draggable'
 
 export default defineComponent({
     name: 'DraggableItem',

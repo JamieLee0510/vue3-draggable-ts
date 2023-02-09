@@ -11,5 +11,6 @@
       "outDir": "./types",
       "declaration": true
   },
- 
+  "include": ["src","examples"],
+  "exclude": ["test"]
 }

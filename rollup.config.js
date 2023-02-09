@@ -1,60 +1,46 @@
-const resolve = require('@rollup/plugin-node-resolve')
-// import babel from '@rollup/plugin-babel';
-const vuePlugin = require('rollup-plugin-vue')
-const commonjs = require('@rollup/plugin-commonjs')
-const typescript = require('rollup-plugin-typescript2')
-
+// import vue from 'rollup-plugin-vue'
+const { nodeResolve } = require('@rollup/plugin-node-resolve')
+const path = require('path')
+// import commonjs from '@rollup/plugin-commonjs'
+const { terser } = require('rollup-plugin-terser')
+const typescript = require('@rollup/plugin-typescript')
 const pkg = require('./package.json')
+const postCss = require('rollup-plugin-postcss')
+const vue = require('rollup-plugin-vue')
 
-// 以下内容会添加到打包结果中
-const footer = `
-if(typeof window !== 'undefined') {
-  window._DemoRollup_VERSION_ = '${pkg.version}'
-}`
+const overrides = {
+    compilerOptions: { declaration: true }, // 是否创建 typescript 声明文件
+    exclude: [
+        // 排除项
+        'node_modules',
+        'examples',
+    ],
+}
 
-module.exports = [
+export default [
     {
-        input: './src/index.ts', // 打包入口
+        input: path.resolve(__dirname, './src/index.ts'),
         output: [
-            // {
-            //   // 打包出口
-            //   file: "dist/index.js",
-            //   format: "umd", // umd是兼容amd/cjs/iife的通用打包格式，适合浏览器
-            //   name: "demo_rollup", // cdn方式引入时挂载在window上面用的就是这个名字
-            //   sourcemap: true,
-            // },
             {
-                file: pkg.main,
-                format: 'cjs',
-                footer,
-            },
-            {
+                format: 'es',
                 file: pkg.module,
-                format: 'esm',
-                footer,
-            },
-            {
-                file: pkg.browser,
-                format: 'umd',
-                name: 'demo_rollup',
-                footer,
             },
         ],
         plugins: [
-            // 打包插件
-            vuePlugin(),
-            typescript(), // 解析TypeScript
-            commonjs(), // 将 CommonJS 转换成 ES2015 模块供 Rollup 处理
-            resolve(), // 查找和打包node_modules中的第三方模块
-            // babel({ babelHelpers: "bundled" }), // babel配置,编译es6
+            terser(),
+            nodeResolve(),
+            // commonjs(),
+            vue({
+                target: 'browser',
+                css: true,
+                exposeFilename: false,
+            }),
+            postCss(),
+            typescript(overrides),
         ],
+        external: ['vue'],
+        // external(id) {
+        //     return /^vue/.test(id) || deps.some(k => new RegExp('^' + k).test(id))
+        // },
     },
-    // {
-    //   input: `src/index.ts`,
-    //   plugins: [dts()],
-    //   output: {
-    //     file: `dist/index.d.ts`,
-    //     format: 'es',
-    //   },
-    // }
 ]

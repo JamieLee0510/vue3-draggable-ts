@@ -1,5 +1,5 @@
 import { ref, onMounted, onUpdated, watch, SetupContext, Ref, nextTick } from 'vue'
-import { changeArrayOrder } from '../utils/change-order_demo'
+import { changeArrayOrder } from '../utils/change-order'
 import { getIdGenerator } from '../utils/id-generator'
 import { throttle } from '../utils/throttle'
 
