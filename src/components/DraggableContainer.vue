@@ -1,29 +1,27 @@
 <template>
     <div @dragover.prevent.stop="onDragOver">
+        <!-- <transition-group name="draggable-item-list"> -->
         <transition-group name="draggable-item-list">
             <DraggableItemComponent
                 v-for="(item, index) in items"
-                :key="item.id"
+                :key="item[keyName]"
                 :item="item"
                 :containerId="id"
                 :position="index"
+                :keyName="keyName"
                 @itemDragOver="onItemDragOver"
                 @dragenter.prevent
             >
-                <slot name="item" :item="item.data"></slot>
+                <slot name="item" :item="item"></slot>
             </DraggableItemComponent>
         </transition-group>
     </div>
 </template>
 
 <script lang="ts">
-import { toRefs, defineComponent, ref } from 'vue'
+import { toRefs, toRef, defineComponent, ref, watch } from 'vue'
 import DraggableItemComponent from './DraggableItem.vue'
-import { DraggableItem } from '../types/draggable-item.interface'
 import { useDraggableContainer } from '../composables/draggable'
-import { getIdGenerator } from '../utils/id-generator'
-import { toDraggableItems } from '../utils/to-draggable-items'
-import { changeArrayOrder } from '../utils/change-order'
 export default defineComponent({
     name: 'Draggable',
     components: {
@@ -31,27 +29,24 @@ export default defineComponent({
     },
     props: {
         modelValue: Array,
-        transition: {
-            default: '0',
-            type: String,
-        },
+        keyName: String,
     },
     setup(props, context) {
         const { modelValue } = toRefs(props)
-        const { id, items, onDragOver, onItemDragOver } = useDraggableContainer(modelValue, context)
-
+        const { id, items, onDragOver, onItemDragOver } = useDraggableContainer(
+            modelValue,
+            props.keyName,
+            context,
+        )
+        console.log(`in Container, items:${items.value}`)
+        watch(
+            () => props.modelValue,
+            value => {
+                console.log('----wathc modelValue changed in ContainerComponent:', value)
+            },
+            { deep: true },
+        )
         return { id, items, onDragOver, onItemDragOver }
-    },
-    computed: {
-        transitionStyle() {
-            return `transform ${this.transition}ms`
-        },
     },
 })
 </script>
-
-<style scoped>
-.draggable-item-list-move {
-    transition: v-bind(transitionStyle);
-}
-</style>
