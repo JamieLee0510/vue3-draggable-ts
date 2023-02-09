@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onUpdated, watch, reactive } from 'vue'
-import DraggableItemContainer from './components/DraggableContainer.vue'
+import DraggableItemContainer from '../src/components/DraggableContainer.vue'
 export default defineComponent({
     name: 'Sample',
     components: {
