@@ -68,3 +68,8 @@ This componet is implemented based on [v-slot](https://v3.vuejs.org/guide/compon
 | :--------- | :------- | :----- | :--------------------------------------- |
 | modelValue | REQUIRED | ARRAY  | v-model value, items to be bound         |
 | keyName    | REQUIRED | STRING | One unique Object member to be v-for key |
+
+# TODO
+
+-   Generate index.d.ts auto by rollup.
+-   Add function as optional prop, in order to trigger event while onDragStart, onDragEnd,...etc.
