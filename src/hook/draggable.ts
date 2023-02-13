@@ -5,6 +5,7 @@ import { throttle } from '../utils/throttle'
 
 let itemCurrentlyDragging = ref<any>(null)
 let containerIdCurrentlyDraggedOver = ref<number | null>(null)
+let currentGroup = ref<string | null>(null)
 let transitioning = false
 const containerIdGenerator = getIdGenerator()
 
@@ -12,18 +13,16 @@ const useDraggableContainer = <T>(
     originalItems: Ref<Array<T>>,
     keyName: string,
     context: SetupContext,
+    group?: string,
+    limitation?: (list: Array<T>) => boolean,
 ) => {
     const id = containerIdGenerator()
-
-    //const items = ref<Array<DraggableItem>>(toDraggableItems(originalItems.value))
-
     const items = ref<Array<T>>(JSON.parse(JSON.stringify(originalItems.value)))
 
     // update items while props.list changed
     watch(
         () => originalItems,
         newValue => {
-            console.log('---watch originalItems.value in hook')
             items.value = JSON.parse(JSON.stringify(newValue.value))
         },
         { deep: true },
@@ -34,7 +33,13 @@ const useDraggableContainer = <T>(
         if (itemCurrentlyDragging.value) {
             return
         }
-        context.emit('update:modelValue', JSON.parse(JSON.stringify(items.value)))
+        if (limitation && !limitation(JSON.parse(JSON.stringify(items.value)))) {
+            context.emit('triggerEvent', JSON.parse(JSON.stringify(items.value)))
+            context.emit('update:modelValue', JSON.parse(JSON.stringify(items.value)))
+        }
+
+        // context.emit('triggerEvent', JSON.parse(JSON.stringify(items.value)))
+        // context.emit('update:modelValue', JSON.parse(JSON.stringify(items.value)))
     })
     // case when an item is being dragged to another container
     watch(containerIdCurrentlyDraggedOver, () => {
@@ -48,11 +53,15 @@ const useDraggableContainer = <T>(
 
     // when an item is moved to an empty container
     const onDragOver = () => {
+        console.log('enter onDragOver')
         if (
             transitioning ||
             !itemCurrentlyDragging.value ||
             containerIdCurrentlyDraggedOver.value === id
         ) {
+            return
+        }
+        if (group && currentGroup.value !== group) {
             return
         }
 
@@ -86,6 +95,7 @@ const useDraggableItem = <T>(
     position: Ref<number>,
     containerId: Ref<number>,
     context: SetupContext,
+    group?: Ref<string>,
 ) => {
     const draggableItemEl = ref<Element | null>(null)
     const isDragging = ref(false)
@@ -116,8 +126,10 @@ const useDraggableItem = <T>(
     })
 
     const onDragStart = () => {
+        console.log('containerId:', containerId.value)
         itemCurrentlyDragging.value = item.value
         containerIdCurrentlyDraggedOver.value = containerId.value
+        currentGroup.value = group.value
         isDragging.value = true
     }
 
@@ -129,7 +141,7 @@ const useDraggableItem = <T>(
         if (item.value[keyName] === itemCurrentlyDragging.value[keyName]) {
             return
         }
-
+        console.log('containerId.value:', containerId.value)
         if (containerIdCurrentlyDraggedOver.value !== containerId.value) {
             containerIdCurrentlyDraggedOver.value = containerId.value
         }
