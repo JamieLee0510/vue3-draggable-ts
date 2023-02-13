@@ -11,6 +11,7 @@
                 :keyName="keyName"
                 @itemDragOver="onItemDragOver"
                 @dragenter.prevent
+                :group="group"
             >
                 <slot name="item" :item="item"></slot>
             </DraggableItemComponent>
@@ -19,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { toRefs, defineComponent, ref, watch } from 'vue'
+import { toRefs, defineComponent, defineProps, PropType } from 'vue'
 import DraggableItemComponent from './DraggableItem.vue'
 import { useDraggableContainer } from '../hook/draggable'
 
@@ -37,6 +38,14 @@ export default defineComponent({
             type: String,
             require: true,
         },
+        group: {
+            type: String,
+            require: false,
+        },
+        limitation: {
+            type: Function,
+            require: false,
+        },
     },
     setup(props, context) {
         const { modelValue } = toRefs(props)
@@ -44,15 +53,10 @@ export default defineComponent({
             modelValue,
             props.keyName,
             context,
+            props.group,
+            props.limitation as (list: Array<any>) => boolean,
         )
-        console.log(`in Container, items:${items.value}`)
-        watch(
-            () => props.modelValue,
-            value => {
-                console.log('----wathc modelValue changed in ContainerComponent:', value)
-            },
-            { deep: true },
-        )
+
         return { id, items, onDragOver, onItemDragOver }
     },
 })

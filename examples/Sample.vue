@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="left">
-            <Draggable v-model="items1" keyName="title" class="drop-zone">
+            <Draggable v-model="items1" keyName="title" class="drop-zone" group="zone1">
                 <template v-slot:item="{ item }">
                     <div class="draggable-item">{{ item.title }}</div>
                 </template>
@@ -9,7 +9,14 @@
             <pre>{{ JSON.stringify(items1, undefined, 4) }}</pre>
         </div>
         <div class="right">
-            <Draggable v-model="items2" keyName="title" class="drop-zone">
+            <Draggable
+                v-model="items2"
+                keyName="title"
+                class="drop-zone"
+                group="zone1"
+                :limitation="limitation"
+                @triggerEvent="trigger"
+            >
                 <template v-slot:item="{ item }">
                     <div class="draggable-item">{{ item.title }}</div>
                 </template>
@@ -33,24 +40,28 @@ export default defineComponent({
                 .map((_, index) => ({ title: `Item ${index + 1}` })),
         )
         const items2 = ref([])
-        // id:for draggabe container id
-
-        // const { id, items: demoItems, onDragOver, onItemDragOver } = useDraggableContainer(
-        //     items1,
-        //     'title',
-        //     context,
-        //     updateData,
-        // )
 
         const add = () => {
             const current = items1.value.length + 1
             items1.value.push({ title: `Item ${current}` })
         }
 
+        const trigger = (list: Array<any>) => {
+            console.log(list)
+        }
+        const limitation = (list: Array<any>) => {
+            if (list.length > 1) {
+                alert('list.length > 1')
+                return false
+            }
+            return true
+        }
         return {
             items1,
             items2,
             add,
+            trigger,
+            limitation,
         }
     },
 })

@@ -25,9 +25,13 @@ export default defineComponent({
         position: Number,
         keyName: String,
         containerId: Number,
+        group: {
+            type: String,
+            require: false,
+        },
     },
     setup(props, context) {
-        const { item, position, containerId } = toRefs(props)
+        const { item, position, containerId, group } = toRefs(props)
 
         const {
             draggableItemEl,
@@ -37,7 +41,7 @@ export default defineComponent({
             onDragEnd,
             transitionStart,
             transitionEnd,
-        } = useDraggableItem(item, props.keyName, position, containerId, context)
+        } = useDraggableItem(item, props.keyName, position, containerId, context, group)
 
         return {
             draggableItemEl,
