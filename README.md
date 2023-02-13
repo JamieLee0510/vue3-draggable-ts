@@ -64,12 +64,15 @@ This componet is implemented based on [v-slot](https://v3.vuejs.org/guide/compon
 
 ### Props
 
-| Name       | Required | Type   | Description                              |
-| :--------- | :------- | :----- | :--------------------------------------- |
-| modelValue | REQUIRED | ARRAY  | v-model value, items to be bound         |
-| keyName    | REQUIRED | STRING | One unique Object member to be v-for key |
+| Name       | Required | Type                   | Description                                                                |
+| :--------- | :------- | :--------------------- | :------------------------------------------------------------------------- |
+| modelValue | REQUIRED | ARRAY                  | v-model value, items to be bound                                           |
+| keyName    | REQUIRED | STRING                 | One unique Object member to be v-for key                                   |
+| group      | OPTIONAL | STRING                 | Items could be dragged&dropped between containers with the same group name |
+| limitation | OPTIONAL | FUNCTION:([])=>boolean | could set the limitation for items                                         |
 
 # TODO
 
 -   Generate index.d.ts auto by rollup.
 -   Add function as optional prop, in order to trigger event while onDragStart, onDragEnd,...etc.
+    -   So far add trigger function which be fired before updating items value
